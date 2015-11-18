@@ -16,6 +16,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     @IBOutlet weak var startScrollingButton: UIButton!
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var speedSlider: UISlider!
+    @IBOutlet weak var rewindButton: UIButton!
+    @IBOutlet weak var fastForwardButton: UIButton!
+    @IBOutlet weak var bigUploadMusicButton: UIButton!
     
     let imagePicker = UIImagePickerController()
     var scrollEnd = CGFloat()
@@ -25,7 +28,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var isRewinding = false
     var scrollInc = CGFloat(1)
     
+    var playImage = UIImage(named: "play.png") as UIImage?
+    var pauseImage = UIImage(named: "pause.png") as UIImage?
+    var rewindImage = UIImage(named: "rewind.png") as UIImage?
+    var fastForwardImage = UIImage(named: "forward.png") as UIImage?
+    
     var timer = NSTimer()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +48,37 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         var interval  = NSTimeInterval(speedSlider.value)
         updateSpeed(interval)
         
+        //Navigation bar setup
+        
+        var titleView : UIImageView
+        // set the dimensions you want here
+        titleView = UIImageView(frame:CGRectMake(0, 0, 40, 70))
+        // Set how do you want to maintain the aspect
+        titleView.contentMode = .ScaleAspectFit
+        titleView.image = UIImage(named: "logo.png")
+        titleView.image = resizeImage(titleView.image!, newHeight: 42)
+        self.navigationItem.titleView = titleView
+        
+        //Create upload music button
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Upload Music", style: UIBarButtonItemStyle.Plain, target: self, action: "uploadMusic")
+        
+        //Create reset music button
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: UIBarButtonItemStyle.Plain, target: self, action: "reset")
+        
+        
+        
+        playImage = resizeImage(playImage!, newHeight: 120)
+        pauseImage = resizeImage(pauseImage!, newHeight: 120)
+        rewindImage = resizeImage(rewindImage!, newHeight: 100)
+        fastForwardImage = resizeImage(fastForwardImage!, newHeight: 100)
+        
+        
+        changeButtonBg(startScrollingButton, bg: playImage!)
+        
+        changeButtonBg(rewindButton, bg: rewindImage!)
+        changeButtonBg(fastForwardButton, bg: fastForwardImage!)
+
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -47,7 +87,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func uploadMusic(sender: AnyObject) {
+    func uploadMusic() {
         
         imagePicker.allowsEditing = false
         imagePicker.sourceType = .PhotoLibrary
@@ -91,6 +131,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         updateSpeed(interval)
     }
     
+    @IBAction func uploadMusicClicked(sender: AnyObject) {
+        uploadMusic()
+    }
     
     
     func imagePickerController(_ picker: UIImagePickerController,
@@ -98,11 +141,14 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imageView.contentMode = .ScaleAspectFit
             imageView.image = resizeImage(pickedImage, newHeight: 300)
+            bigUploadMusicButton.hidden = true
             
         }
             
             
         print(imageView.bounds.size)
+            
+        reset()
         
         dismissViewControllerAnimated(true, completion: nil)
     }
@@ -139,14 +185,18 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             scrollInc = -1
         }
         
-        startScrollingButton.setTitle("Stop Scrolling", forState: UIControlState.Normal)
+        changeButtonBg(startScrollingButton, bg: pauseImage!)
+        
+        //startScrollingButton.setTitle("Stop Scrolling", forState: UIControlState.Normal)
         
     }
     
     func stopScrolling() {
         timer.invalidate()
         isScrolling = false
-        startScrollingButton.setTitle("Start Scrolling", forState: UIControlState.Normal)
+        
+        changeButtonBg(startScrollingButton, bg: playImage!)
+        //startScrollingButton.setTitle("Start Scrolling", forState: UIControlState.Normal)
     }
     
     func scrollMusic() {
@@ -162,6 +212,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     //FAST FORWARD
     
     func fastForward() {
+        print("yo")
         stopScrolling()
         var doubleSpeed = speed / 3
         startScrolling(doubleSpeed)
@@ -196,6 +247,21 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         if(wasScrolling) {
             startScrolling(speed)
         }
+    }
+    
+    //START SCROLLING BUTTON
+    
+    func changeButtonBg(button: UIButton, bg: UIImage) {
+        
+        button.setImage(bg, forState: .Normal)
+        button.setTitle("", forState: UIControlState.Normal)
+    }
+    
+    //RESET
+    
+    func reset() {
+        stopScrolling()
+        scrollView.setContentOffset(CGPoint(x: 0,y: 0), animated: false)
     }
 
 
