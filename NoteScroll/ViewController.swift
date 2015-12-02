@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import CoreBluetooth
 
-class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,CBCentralManagerDelegate,CBPeripheralDelegate {
+class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIKeyInput {
     
 
     @IBOutlet weak var imageView: UIImageView!
@@ -27,6 +26,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var isScrolling = false
     var speed = 0.01
     var isRewinding = false
+    var isFastForwarding = false
     var scrollInc = CGFloat(1)
 
     
@@ -37,15 +37,10 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     
     var timer = NSTimer()
     
-    //BLUETOOTH VARS
-    var btManager: CBCentralManager!
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        btManager = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())
-        btManager.scanForPeripheralsWithServices(nil, options: nil)
         
         
         imagePicker.delegate = self
@@ -92,7 +87,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         //BLUETOOTH SETUP
         
-
+        self.resignFirstResponder()
         
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -166,6 +161,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         reset()
         
         dismissViewControllerAnimated(true, completion: nil)
+            
+        self.resignFirstResponder()
+
     }
     
     func resizeImage(image: UIImage, newHeight: CGFloat) -> UIImage {
@@ -202,6 +200,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         changeButtonBg(startScrollingButton, bg: pauseImage!)
         
+        self.becomeFirstResponder()
+        
         //startScrollingButton.setTitle("Stop Scrolling", forState: UIControlState.Normal)
         
     }
@@ -209,8 +209,12 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     func stopScrolling() {
         timer.invalidate()
         isScrolling = false
+        isRewinding = false
+        isFastForwarding = false
         
         changeButtonBg(startScrollingButton, bg: playImage!)
+        
+        self.resignFirstResponder()
         //startScrollingButton.setTitle("Start Scrolling", forState: UIControlState.Normal)
     }
     
@@ -230,11 +234,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         print("yo")
         stopScrolling()
         var doubleSpeed = speed / 3
+        isFastForwarding = true
         startScrolling(doubleSpeed)
     }
     
     func stopFastForward() {
         stopScrolling()
+        isFastForwarding = false
         startScrolling(speed)
     }
     
@@ -280,14 +286,39 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     }
     
     //BLUETOOTH 
-    func centralManagerDidUpdateState(central: CBCentralManager!) {
-        print("yo1")
-        
-    }
 
-    func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
-        print("yo2")
-    }
 
+    func insertText(text: String) {
+        switch text{
+        case "1":
+            if(isRewinding) {
+                stopRewind()
+            }
+            else {
+                rewind()
+            }
+        case "3":
+            if(isFastForwarding){
+                stopFastForward()
+            }
+            else {
+                fastForward()
+            }
+        default:
+            break
+        }
+        return
+    }
+    func deleteBackward() {
+        return
+    }
+    func hasText() -> Bool {
+        return true
+    }
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
 }
+
+
 
