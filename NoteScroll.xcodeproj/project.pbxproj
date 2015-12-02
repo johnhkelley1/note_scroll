@@ -195,6 +195,7 @@
 				TargetAttributes = {
 					52E67E9C1BF272300087D01C = {
 						CreatedOnToolsVersion = 7.0.1;
+						DevelopmentTeam = 4D64HVT3U8;
 					};
 					52E67EB31BF272300087D01C = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -402,10 +403,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = NoteScroll/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnkelley.NoteScroll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -413,10 +417,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = NoteScroll/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnkelley.NoteScroll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -487,6 +494,7 @@
 				52E67ECA1BF272300087D01C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		52E67ECB1BF272300087D01C /* Build configuration list for PBXNativeTarget "NoteScrollTests" */ = {
 			isa = XCConfigurationList;
@@ -495,6 +503,7 @@
 				52E67ECD1BF272300087D01C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		52E67ECE1BF272300087D01C /* Build configuration list for PBXNativeTarget "NoteScrollUITests" */ = {
 			isa = XCConfigurationList;
@@ -503,6 +512,7 @@
 				52E67ED01BF272300087D01C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

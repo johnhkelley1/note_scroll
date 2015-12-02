@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreBluetooth
 
-class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,CBCentralManagerDelegate,CBPeripheralDelegate {
     
 
     @IBOutlet weak var imageView: UIImageView!
@@ -27,6 +28,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var speed = 0.01
     var isRewinding = false
     var scrollInc = CGFloat(1)
+
     
     var playImage = UIImage(named: "play.png") as UIImage?
     var pauseImage = UIImage(named: "pause.png") as UIImage?
@@ -35,9 +37,17 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     
     var timer = NSTimer()
     
+    //BLUETOOTH VARS
+    var btManager: CBCentralManager!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        btManager = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())
+        btManager.scanForPeripheralsWithServices(nil, options: nil)
+        
+        
         imagePicker.delegate = self
         
         scrollView.contentSize = imageView.bounds.size
@@ -55,9 +65,11 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         titleView = UIImageView(frame:CGRectMake(0, 0, 40, 70))
         // Set how do you want to maintain the aspect
         titleView.contentMode = .ScaleAspectFit
-        titleView.image = UIImage(named: "logo.png")
-        titleView.image = resizeImage(titleView.image!, newHeight: 42)
-        self.navigationItem.titleView = titleView
+        //titleView.image = UIImage(named: "logo.png")
+        //titleView.image = resizeImage(titleView.image!, newHeight: 42)
+        //self.navigationItem.titleView = titleView
+        
+        self.navigationItem.title = "NoteScroll"
         
         //Create upload music button
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Upload Music", style: UIBarButtonItemStyle.Plain, target: self, action: "uploadMusic")
@@ -77,6 +89,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         changeButtonBg(rewindButton, bg: rewindImage!)
         changeButtonBg(fastForwardButton, bg: fastForwardImage!)
+        
+        //BLUETOOTH SETUP
+        
 
         
         // Do any additional setup after loading the view, typically from a nib.
@@ -263,7 +278,16 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         stopScrolling()
         scrollView.setContentOffset(CGPoint(x: 0,y: 0), animated: false)
     }
+    
+    //BLUETOOTH 
+    func centralManagerDidUpdateState(central: CBCentralManager!) {
+        print("yo1")
+        
+    }
 
+    func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
+        print("yo2")
+    }
 
 }
 
